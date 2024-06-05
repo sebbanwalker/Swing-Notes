@@ -68,10 +68,10 @@ app.post("/notes", async (req, res) => {
 
 app.put("/notes/:id", async (req, res) => {
 	try {
-		const { title, text } = req.body;
+		const { title, text, date } = req.body;
 		const note = await Note.findByIdAndUpdate(
 			req.params.id,
-			{ title, text, modifiedAt: new Date() },
+			{ title, text, modifiedAt: new Date(date) },
 			{ new: true }
 		);
 

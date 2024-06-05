@@ -2,7 +2,7 @@ import React, { useState } from "react";
 import style from "./Note.module.scss";
 import Modal from "../components/Modal";
 
-const Note = ({ title, description, date, onSave, onDelete, isNewNote }) => {
+const Note = ({ title, description, date, modifiedAt, onSave, onDelete }) => {
 	const [showModal, setShowModal] = useState(false);
 
 	return (
@@ -12,7 +12,7 @@ const Note = ({ title, description, date, onSave, onDelete, isNewNote }) => {
 					<Modal
 						note={{ title, text: description }}
 						onSave={(newTitle, newDescription) => {
-							onSave(newTitle, newDescription);
+							onSave(newTitle, newDescription, new Date().toISOString());
 							setShowModal(false);
 						}}
 						onClose={() => setShowModal(false)}
@@ -22,7 +22,13 @@ const Note = ({ title, description, date, onSave, onDelete, isNewNote }) => {
 				<>
 					<h2 className={style.title}>{title}</h2>
 					<p className={style.description}>{description}</p>
-					<p className={style.date}>{new Date(date).toLocaleString()}</p>
+					<p className={style.date}>
+						Created at: {new Date(date).toLocaleString()}
+					</p>
+					<p className={style.date}>
+						{modifiedAt &&
+							`Modified at: ${new Date(modifiedAt).toLocaleString()}`}
+					</p>
 					<section className={style.buttons}>
 						<button
 							className={style.editButton}

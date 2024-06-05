@@ -1,5 +1,39 @@
 @use "../variables.scss" as *;
 
+.dropdown {
+	position: relative;
+	display: inline-block;
+}
+
+.dropdownContent {
+	display: none;
+	position: absolute;
+	background-color: $primaryGrey;
+	min-width: 160px;
+	box-shadow: 0px 8px 16px 0px rgba(0, 0, 0, 0.2);
+	z-index: 1;
+	right: 0;
+	top: 100%;
+	border-radius: 0 0 10px 10px;
+	padding: 12px 16px;
+}
+
+.dropdownContent button {
+	color: $primaryBlue;
+	padding: 12px 16px;
+	text-decoration: none;
+	display: block;
+	border: none;
+	background: none;
+	width: 100%;
+	text-align: left;
+	cursor: pointer;
+}
+
+.dropdown:hover .dropdownContent {
+	display: block;
+}
+
 .headerContainer {
 	display: flex;
 	top: 0;

@@ -1,5 +1,6 @@
 import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
+import Header from "../components/Header";
 
 const LoginPage = () => {
 	const [username, setUsername] = useState("");
@@ -13,27 +14,30 @@ const LoginPage = () => {
 	};
 
 	return (
-		<form onSubmit={handleSubmit}>
-			<label>
-				Username:
-				<input
-					type="text"
-					value={username}
-					onChange={(e) => setUsername(e.target.value)}
-					required
-				/>
-			</label>
-			<label>
-				Password:
-				<input
-					type="password"
-					value={password}
-					onChange={(e) => setPassword(e.target.value)}
-					required
-				/>
-			</label>
-			<button type="submit">Login</button>
-		</form>
+		<>
+			<Header />
+			<form onSubmit={handleSubmit}>
+				<label>
+					Username:
+					<input
+						type="text"
+						value={username}
+						onChange={(e) => setUsername(e.target.value)}
+						required
+					/>
+				</label>
+				<label>
+					Password:
+					<input
+						type="password"
+						value={password}
+						onChange={(e) => setPassword(e.target.value)}
+						required
+					/>
+				</label>
+				<button type="submit">Login</button>
+			</form>
+		</>
 	);
 };
 

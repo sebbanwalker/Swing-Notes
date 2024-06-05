@@ -6,7 +6,7 @@ const Modal = ({ note, onSave, onClose }) => {
 	const [noteDescription, setNoteDescription] = useState(note.text);
 
 	const handleSave = () => {
-		onSave(noteTitle, noteDescription);
+		onSave(noteTitle, noteDescription, new Date().toISOString());
 		onClose();
 	};
 

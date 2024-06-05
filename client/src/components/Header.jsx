@@ -6,6 +6,7 @@ import { useNavigate } from "react-router-dom";
 const Header = () => {
 	const [isLoggedIn, setIsLoggedIn] = useState(false);
 	const [username, setUsername] = useState("");
+	const [dropdownOpen, setDropdownOpen] = useState(false);
 	const navigate = useNavigate();
 
 	useEffect(() => {
@@ -16,6 +17,13 @@ const Header = () => {
 			setIsLoggedIn(true);
 		}
 	}, []);
+
+	const handleLogout = () => {
+		localStorage.removeItem("user");
+		setIsLoggedIn(false);
+		setUsername("");
+		navigate("/login");
+	};
 
 	return (
 		<section className={style.headerContainer}>
@@ -32,7 +40,18 @@ const Header = () => {
 					Sign Up
 				</button>
 				{isLoggedIn ? (
-					<span className={style.headerButton}>{username}</span>
+					<div className={style.dropdown}>
+						<button
+							className={style.headerButton}
+							onClick={() => setDropdownOpen(!dropdownOpen)}>
+							{username}
+						</button>
+						{dropdownOpen && (
+							<div className={style.dropdownContent}>
+								<button onClick={handleLogout}>Logout</button>
+							</div>
+						)}
+					</div>
 				) : (
 					<button
 						className={style.headerButton}

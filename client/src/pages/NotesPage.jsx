@@ -44,14 +44,14 @@ const NotesPage = () => {
 		setModalOpen(true);
 	};
 
-	const handleSaveNote = async (title, text) => {
+	const handleSaveNote = async (title, text, date) => {
 		const userId = localStorage.getItem("userId");
 		try {
 			const response = await axios.post("http://localhost:5173/notes", {
 				userId,
 				title,
 				text,
-				date: new Date().toISOString(),
+				date,
 			});
 
 			if (response.data) {
@@ -79,7 +79,7 @@ const NotesPage = () => {
 		}
 	};
 
-	const handleEditNote = async (noteId, newTitle, newText) => {
+	const handleEditNote = async (noteId, newTitle, newText, date) => {
 		const userId = localStorage.getItem("userId");
 		try {
 			const response = await axios.put(
@@ -88,7 +88,7 @@ const NotesPage = () => {
 					userId,
 					title: newTitle,
 					text: newText,
-					date: new Date().toISOString(),
+					date,
 				}
 			);
 
@@ -118,8 +118,14 @@ const NotesPage = () => {
 							date={note.createdAt}
 							onDelete={() => handleDeleteNote(note._id)}
 							onSave={(newTitle, newText) =>
-								handleEditNote(note._id, newTitle, newText)
+								handleEditNote(
+									note._id,
+									newTitle,
+									newText,
+									new Date().toISOString()
+								)
 							}
+							modifiedAt={note.modifiedAt}
 						/>
 					))}
 				</section>
@@ -135,7 +141,7 @@ const NotesPage = () => {
 				<Note
 					{...newNote}
 					onSave={(newTitle, newText) => {
-						handleSaveNote(newTitle, newText);
+						handleSaveNote(newTitle, newText, new Date().toISOString());
 						setNewNote(null);
 					}}
 				/>
@@ -145,9 +151,14 @@ const NotesPage = () => {
 					note={editingNote}
 					onSave={(newTitle, newText) => {
 						if (isNewNote) {
-							handleSaveNote(newTitle, newText);
+							handleSaveNote(newTitle, newText, new Date().toISOString());
 						} else {
-							handleEditNote(editingNote._id, newTitle, newText);
+							handleEditNote(
+								editingNote._id,
+								newTitle,
+								newText,
+								new Date().toISOString()
+							);
 						}
 						setModalOpen(false);
 					}}
