@@ -1,8 +1,10 @@
 import React from "react";
 import { BrowserRouter as Router, Route, Routes } from "react-router-dom";
-import MainPage from "../components/MainPage";
-import LoginPage from "../components/LoginPage";
-import SignUpPage from "../components/SignUpPage";
+import MainPage from "../pages/MainPage";
+import LoginPage from "../pages/LoginPage";
+import SignUpPage from "../pages/SignUpPage";
+import NotesPage from "../pages/NotesPage";
+import NotFoundPage from "../pages/NotFoundPage";
 
 const AppRoutes = () => {
   return (

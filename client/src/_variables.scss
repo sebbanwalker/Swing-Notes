@@ -1,0 +1,42 @@
+@import url("https://fonts.googleapis.com/css2?family=Assistant:wght@200;300;400;500;600;700;800&family=Inter&display=swap");
+
+$buttonFont: "Assistant";
+
+$light: 200;
+$medium: 300;
+$normal: 400;
+$semiBold: 600;
+
+$primaryWhite: rgb(223, 223, 223);
+$primaryLight: rgb(144, 152, 163);
+$primaryGrey: rgb(139, 146, 156);
+$primaryNavy: rgb(34, 49, 66);
+$primaryBlue: rgb(33, 57, 84);
+$primaryIndigo: rgb(62, 69, 74);
+$primaryBlack: rgb(20, 37, 33);
+$primaryRed: rgb(218, 40, 40);
+
+$base: 16px;
+
+$gap: $base;
+$gap-sml: calc($base / 2);
+
+$margin-xl: calc($base * 2);
+$margin-l: calc($base * 1.5);
+$margin: $base;
+$margin-sml: calc($base / 2);
+
+$padding-xl: calc($base * 2);
+$padding-l: calc($base * 1.5);
+$padding: $base;
+$padding-sml: calc($base / 2);
+
+$radius: calc($base / 6);
+
+@mixin standard-shadow {
+	box-shadow: 2px 2px 10px rgba(0, 0, 0, 0.1);
+}
+
+@mixin button-shadow {
+	box-shadow: 1px 1px 5px rgba(0, 0, 0, 0.1);
+}

@@ -1,0 +1,9 @@
+@use './variables.scss' as *;
+
+* {
+  caret-color: transparent;
+}
+
+body {
+  background-color: $primaryGrey;
+}

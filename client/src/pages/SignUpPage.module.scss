@@ -1,0 +1,34 @@
+@use "../variables.scss" as *;
+
+.form {
+}
+
+.input {
+	margin-bottom: 10px;
+	border: none;
+	background-color: $primaryLight;
+	border-radius: $radius;
+	height: 20px;
+	font-family: $buttonFont;
+	outline: none; // Add this line
+
+	&:focus {
+		box-shadow: 0 0 0 2px rgba(62, 62, 62, 0.25); // Add a custom focus style
+	}
+}
+
+.inputContainer {
+	display: flex;
+	flex-direction: column;
+	align-items: center;
+	justify-content: center;
+	gap: $gap-sml;
+	margin: $margin;
+}
+
+.label {
+	font-family: $buttonFont;
+}
+
+.submit {
+}

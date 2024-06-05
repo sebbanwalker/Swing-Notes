@@ -1,0 +1,44 @@
+@use "../variables.scss" as *;
+
+.headerContainer {
+	display: flex;
+	top: 0;
+	justify-content: space-between;
+	align-items: center;
+	width: 100%;
+	left: 0;
+	right: 0;
+	padding: 3px;
+	background-color: $primaryGrey !important;
+}
+
+.headerImage {
+	max-height: 10vh;
+	max-width: 8vw;
+	min-height: 50px;
+	min-width: 50px;
+	@include standard-shadow;
+	border-radius: 10px;
+	margin-left: 0.5vw;
+	margin-top: 0.5vw;
+	margin-bottom: 0.5vw;
+}
+
+.headerButtonContainer {
+	width: 40%;
+	margin-right: 10%;
+	display: flex;
+	justify-content: space-between;
+	align-items: stretch;
+}
+
+.headerButton {
+	font-family: $buttonFont;
+	color: $primaryBlue;
+	font-weight: $semiBold;
+	font-size: 2rem;
+	border: none;
+	background: none;
+	margin: auto;
+	cursor: pointer;
+}
