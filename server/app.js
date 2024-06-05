@@ -69,13 +69,14 @@ app.post("/notes", async (req, res) => {
 app.put("/notes/:id", async (req, res) => {
 	try {
 		const { title, text, date } = req.body;
-		const note = await Note.findByIdAndUpdate(
-			req.params.id,
-			{ title, text, modifiedAt: new Date(date) },
-			{ new: true }
-		);
-
+		const note = await Note.findById(req.params.id);
 		if (note) {
+			note.title = title;
+			note.text = text;
+			if (date !== note.createdAt.toISOString()) {
+				note.modifiedAt = new Date(date);
+			}
+			await note.save();
 			res.json(note);
 		} else {
 			res.status(404).send("Note not found");

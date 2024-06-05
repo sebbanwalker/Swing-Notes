@@ -9,8 +9,8 @@ const LoginPage = () => {
 
 	const handleSubmit = (event) => {
 		event.preventDefault();
-		localStorage.setItem("user", JSON.stringify({ username }));
-		navigate("/main");
+		localStorage.setItem("userId", JSON.stringify({ username }));
+		navigate("/notes");
 	};
 
 	return (

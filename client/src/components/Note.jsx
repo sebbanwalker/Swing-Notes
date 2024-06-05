@@ -12,7 +12,11 @@ const Note = ({ title, description, date, modifiedAt, onSave, onDelete }) => {
 					<Modal
 						note={{ title, text: description }}
 						onSave={(newTitle, newDescription) => {
-							onSave(newTitle, newDescription, new Date().toISOString());
+							if (newTitle !== title || newDescription !== description) {
+								onSave(newTitle, newDescription, new Date().toISOString());
+							} else {
+								onSave(newTitle, newDescription);
+							}
 							setShowModal(false);
 						}}
 						onClose={() => setShowModal(false)}

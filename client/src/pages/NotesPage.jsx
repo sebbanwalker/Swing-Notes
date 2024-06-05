@@ -12,6 +12,9 @@ const NotesPage = () => {
 	const [editingNote, setEditingNote] = useState(null);
 	const [isNewNote, setIsNewNote] = useState(false);
 
+	const userId = localStorage.getItem("userId");
+	console.log("userId:", userId);
+
 	useEffect(() => {
 		const fetchNotes = async () => {
 			try {
@@ -34,14 +37,20 @@ const NotesPage = () => {
 	}, []);
 
 	const handleCreateNote = () => {
-		setEditingNote({
-			title: "",
-			text: "",
-			date: new Date().toISOString(),
-			isEditable: true,
-		});
-		setIsNewNote(true);
-		setModalOpen(true);
+		const userId = localStorage.getItem("userId");
+		if (userId === null) {
+			alert("You need to log in to create a note.");
+			return;
+		} else {
+			setEditingNote({
+				title: "",
+				text: "",
+				date: new Date().toISOString(),
+				isEditable: true,
+			});
+			setIsNewNote(true);
+			setModalOpen(true);
+		}
 	};
 
 	const handleSaveNote = async (title, text, date) => {
@@ -108,33 +117,39 @@ const NotesPage = () => {
 	return (
 		<>
 			<Header />
-			{notes && notes.length > 0 ? (
-				<section className={style.notes}>
-					{notes.map((note) => (
-						<Note
-							key={note._id}
-							title={note.title}
-							description={note.text}
-							date={note.createdAt}
-							onDelete={() => handleDeleteNote(note._id)}
-							onSave={(newTitle, newText) =>
-								handleEditNote(
-									note._id,
-									newTitle,
-									newText,
-									new Date().toISOString()
-								)
-							}
-							modifiedAt={note.modifiedAt}
-						/>
-					))}
-				</section>
+			{userId !== null ? (
+				notes && notes.length > 0 ? (
+					<section className={style.notes}>
+						{notes.map((note) => (
+							<Note
+								key={note._id}
+								title={note.title}
+								description={note.text}
+								date={note.createdAt}
+								onDelete={() => handleDeleteNote(note._id)}
+								onSave={(newTitle, newText) =>
+									handleEditNote(
+										note._id,
+										newTitle,
+										newText,
+										new Date().toISOString()
+									)
+								}
+								modifiedAt={note.modifiedAt}
+							/>
+						))}
+					</section>
+				) : (
+					<section className={style.message}>
+						<p>There are no notes here :( Create one?</p>
+						<button className={style.create} onClick={handleCreateNote}>
+							Create Note
+						</button>
+					</section>
+				)
 			) : (
 				<section className={style.message}>
-					<p>There are no notes here :( Create one?</p>
-					<button className={style.create} onClick={handleCreateNote}>
-						Create Note
-					</button>
+					<p>You need to log in to see notes.</p>
 				</section>
 			)}
 			{newNote && (

@@ -10,7 +10,7 @@ const Header = () => {
 	const navigate = useNavigate();
 
 	useEffect(() => {
-		const storedUser = localStorage.getItem("user");
+		const storedUser = localStorage.getItem("userId");
 		if (storedUser) {
 			const user = JSON.parse(storedUser);
 			setUsername(user.username);
@@ -19,7 +19,7 @@ const Header = () => {
 	}, []);
 
 	const handleLogout = () => {
-		localStorage.removeItem("user");
+		localStorage.removeItem("userId");
 		setIsLoggedIn(false);
 		setUsername("");
 		navigate("/login");
