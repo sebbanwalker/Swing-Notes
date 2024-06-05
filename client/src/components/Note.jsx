@@ -1,33 +1,23 @@
 import React, { useState } from "react";
 import style from "./Note.module.scss";
+import Modal from "../components/Modal";
 
-const Note = ({ title, description, date, isEditable, onSave, onDelete }) => {
-	const [noteTitle, setNoteTitle] = useState(title);
-	const [noteDescription, setNoteDescription] = useState(description);
-
-	const handleSave = () => {
-		onSave(noteTitle, noteDescription);
-	};
+const Note = ({ title, description, date, onSave, onDelete, isNewNote }) => {
+	const [showModal, setShowModal] = useState(false);
 
 	return (
 		<section className={style.note}>
-			{isEditable ? (
-				<>
-					<input
-						className={style.editTitle}
-						type="text"
-						value={noteTitle}
-						onChange={(e) => setNoteTitle(e.target.value)}
+			{showModal ? (
+				<section className={style.modalOverlay}>
+					<Modal
+						note={{ title, text: description }}
+						onSave={(newTitle, newDescription) => {
+							onSave(newTitle, newDescription);
+							setShowModal(false);
+						}}
+						onClose={() => setShowModal(false)}
 					/>
-					<textarea
-						className={style.editDescription}
-						value={noteDescription}
-						onChange={(e) => setNoteDescription(e.target.value)}
-					/>
-					<button className={style.saveButton} onClick={handleSave}>
-						Save Note
-					</button>
-				</>
+				</section>
 			) : (
 				<>
 					<h2 className={style.title}>{title}</h2>
@@ -36,7 +26,7 @@ const Note = ({ title, description, date, isEditable, onSave, onDelete }) => {
 					<section className={style.buttons}>
 						<button
 							className={style.editButton}
-							onClick={() => setIsEditable(true)}>
+							onClick={() => setShowModal(true)}>
 							Edit Note
 						</button>
 						<button className={style.deleteButton} onClick={onDelete}>

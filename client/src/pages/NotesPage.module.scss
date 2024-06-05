@@ -22,13 +22,20 @@
 	border: none;
 	padding: 10px;
 	border-radius: 6px;
-	background-color: $primaryWhite;
+	background-color: $primaryLighter;
 	margin-left: auto;
 	margin-right: auto;
 	margin-top: 20px;
+	@include button-shadow;
 
 	&:hover {
 		background-color: $primaryNavy;
 		color: $primaryWhite;
 	}
+}
+
+.buttonContainer {
+	width: 80%;
+	margin-left: auto;
+	margin-right: auto;
 }

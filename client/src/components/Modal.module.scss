@@ -1,0 +1,75 @@
+@use "../variables.scss" as *;
+
+@use "../variables.scss" as *;
+
+.modalOverlay {
+	position: fixed;
+	top: 0;
+	left: 0;
+	width: 100%;
+	height: 100%;
+	background-color: rgba(0, 0, 0, 0.5);
+	display: flex;
+	justify-content: center;
+	align-items: center;
+	backdrop-filter: blur(5px);
+}
+
+.modal {
+	position: relative;
+	background: $primaryLight;
+	width: auto;
+	max-width: 500px;
+	z-index: 100;
+	padding: 10px;
+	border-radius: 8px;
+}
+
+.content {
+	display: flex;
+	flex-direction: column;
+	align-items: center;
+}
+
+.editTitle,
+.editDescription {
+	font-family: $buttonFont;
+	border: none;
+	border-radius: 6px;
+	margin-bottom: 10px;
+	padding: 10px;
+	width: 100%;
+	background-color: $primaryLighter;
+}
+
+.editTitle {
+	font-weight: 600;
+	font-size: 18px;
+	color: $primaryIndigo;
+}
+
+.editDescription {
+	font-size: 15px;
+	color: $primaryNavy;
+	font-weight: 500;
+}
+
+.saveButton,
+.closeButton {
+	border: none;
+	background: none;
+	border-radius: 6px;
+	padding: 10px;
+	font-family: $buttonFont;
+	max-width: 100px;
+	margin-bottom: 5px;
+	color: $primaryNavy;
+	font-weight: 600;
+	@include button-shadow;
+
+	&:hover {
+		cursor: pointer;
+		background-color: $primaryNavy;
+		color: $primaryWhite;
+	}
+}

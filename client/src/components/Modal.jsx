@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import style from "./NoteModal.module.scss";
+import style from "./Modal.module.scss";
 
 const Modal = ({ note, onSave, onClose }) => {
 	const [noteTitle, setNoteTitle] = useState(note.title);
@@ -11,27 +11,29 @@ const Modal = ({ note, onSave, onClose }) => {
 	};
 
 	return (
-		<div className={style.modal}>
-			<div className={style.content}>
-				<input
-					className={style.editTitle}
-					type="text"
-					value={noteTitle}
-					onChange={(e) => setNoteTitle(e.target.value)}
-				/>
-				<textarea
-					className={style.editDescription}
-					value={noteDescription}
-					onChange={(e) => setNoteDescription(e.target.value)}
-				/>
-				<button className={style.saveButton} onClick={handleSave}>
-					Save Note
-				</button>
-				<button className={style.closeButton} onClick={onClose}>
-					Close
-				</button>
-			</div>
-		</div>
+		<section className={style.modalOverlay}>
+			<section className={style.modal}>
+				<section className={style.content}>
+					<input
+						className={style.editTitle}
+						type="text"
+						value={noteTitle}
+						onChange={(e) => setNoteTitle(e.target.value)}
+					/>
+					<textarea
+						className={style.editDescription}
+						value={noteDescription}
+						onChange={(e) => setNoteDescription(e.target.value)}
+					/>
+					<button className={style.saveButton} onClick={handleSave}>
+						SAVE NOTE
+					</button>
+					<button className={style.closeButton} onClick={onClose}>
+						CLOSE
+					</button>
+				</section>
+			</section>
+		</section>
 	);
 };
 
