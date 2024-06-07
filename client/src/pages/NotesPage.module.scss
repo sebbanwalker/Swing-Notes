@@ -1,0 +1,65 @@
+@use "../variables.scss" as *;
+
+.notes {
+	display: grid;
+	gap: 10px;
+	grid-template-columns: repeat(3, 1fr);
+	width: 80%;
+	margin-left: auto;
+	margin-right: auto;
+}
+
+.message {
+	margin-left: auto;
+	margin-right: auto;
+	width: 500px;
+	padding: 100px;
+	font-family: $buttonFont;
+	font-weight: 600;
+}
+
+.create {
+	border: none;
+	padding: 10px;
+	border-radius: 6px;
+	background-color: $primaryLighter;
+	margin-left: auto;
+	margin-right: auto;
+	margin-top: 20px;
+	@include button-shadow;
+
+	&:hover {
+		background-color: $primaryNavy;
+		color: $primaryWhite;
+	}
+}
+
+.buttonContainer {
+	width: 80%;
+	margin-left: auto;
+	margin-right: auto;
+}
+
+.searchInput {
+	width: 60%;
+	background: none;
+	border: none;
+	font-family: $buttonFont;
+	color: $primaryNavy;
+	padding: 5px 5px;
+	border: 2px solid rgba($primaryNavy, 0.1);
+	border-radius: 10px;
+	margin-left: 20%;
+	margin-right: 20%;
+	margin-bottom: 10px;
+
+	&::placeholder {
+		color: $primaryNavy;
+	}
+
+	&:focus {
+		outline: none;
+		background-color: $primaryLight;
+		@include button-shadow;
+	}
+}

@@ -1,0 +1,82 @@
+@use "../variables.scss" as *;
+
+.note {
+	background-color: $primaryLight;
+	border-radius: 10px;
+	padding: 16px;
+	@include standard-shadow;
+}
+
+.editTitle {
+}
+
+.editDescription {
+}
+
+.buttons {
+	margin-top: 10px;
+	display: flex;
+	justify-content: space-between;
+}
+
+.saveButton {
+}
+
+.editButton {
+	border: none;
+	background: none;
+	padding: 6px 8px;
+	border-radius: 8px;
+	color: $primaryNavy;
+	@include button-shadow;
+
+	&:hover {
+		background-color: $primaryNavy;
+		color: $primaryWhite;
+	}
+}
+
+.deleteButton {
+	border: none;
+	background: none;
+	padding: 4px 8px;
+	border-radius: 8px;
+	color: $primaryRed;
+	@include button-shadow;
+
+	&:hover {
+		background-color: $primaryRed;
+		color: $primaryWhite;
+	}
+}
+
+.title {
+	font-family: $buttonFont;
+	color: $primaryIndigo;
+}
+
+.description {
+	font-family: $buttonFont;
+	color: $primaryNavy;
+}
+
+.date {
+	font-family: $buttonFont;
+	color: $primaryNavy;
+	font-size: 11px;
+	width: 100%;
+	margin-left: auto;
+}
+
+.modalOverlay {
+	position: fixed;
+	top: 0;
+	left: 0;
+	width: 100%;
+	height: 100%;
+	background-color: rgba(0, 0, 0, 0.5);
+	display: flex;
+	justify-content: center;
+	align-items: center;
+	backdrop-filter: blur(5px);
+}
