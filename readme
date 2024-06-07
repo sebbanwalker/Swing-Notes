@@ -1,4 +1,4 @@
-Start the project by following these steps:
+### Start the project by following these steps:
 
 1. Create .env-file
 2. Run mongodb server on URI: mongodb://localhost:27017
@@ -6,9 +6,12 @@ Start the project by following these steps:
 4. Run npm start or node app.js in server folder.
 5. Run npm run dev in client folder.
 
-How to use:
+### How to use:
 
 1. Press the signup button and create a new user.
 2. Log in with the created user.
 3. Press the notes-tab and create note(s), try editing or removing them.
 4. Press the username and sign out.
+
+Videogenomgång:
+https://www.youtube.com/watch?v=4jhFk3yTitQ
