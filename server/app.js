@@ -10,6 +10,21 @@ const app = express();
 app.use(cors());
 app.use(express.json());
 
+const jwt = require("jsonwebtoken");
+
+function authenticateToken(req, res, next) {
+	const authHeader = req.headers["authorization"];
+	const token = authHeader && authHeader.split(" ")[1];
+
+	if (token == null) return res.sendStatus(401); // if there isn't any token
+
+	jwt.verify(token, jwtSecret, (err, user) => {
+		if (err) return res.sendStatus(403);
+		req.user = user;
+		next(); // pass the execution off to whatever request the client intended
+	});
+}
+
 mongoose
 	.connect("mongodb://localhost:27017/SwingNotes", {
 		useNewUrlParser: true,
@@ -34,9 +49,9 @@ app.use((req, res, next) => {
 	next();
 });
 
-app.get("/notes", async (req, res) => {
+app.get("/notes", authenticateToken, async (req, res) => {
 	try {
-		const notes = await Note.find();
+		const notes = await Note.find({ userId: req.user.userId });
 		res.status(200).json(notes);
 	} catch (err) {
 		console.error(err);
@@ -44,21 +59,23 @@ app.get("/notes", async (req, res) => {
 	}
 });
 
-app.get("/notes/search", async (req, res) => {
+app.get("/notes/search", authenticateToken, async (req, res) => {
 	try {
 		const { title } = req.query;
-		const notes = await Note.find({ title: new RegExp(title, "i") });
+		const notes = await Note.find({
+			title: new RegExp(title, "i"),
+			userId: req.user.userId,
+		});
 		res.json(notes);
 	} catch (err) {
 		console.error(err);
 		res.status(500).send(err.message);
 	}
 });
-
-app.post("/notes", async (req, res) => {
+app.post("/notes", authenticateToken, async (req, res) => {
 	try {
-		const { title, text, userId } = req.body;
-		const newNote = new Note({ title, text, userId });
+		const { title, text } = req.body;
+		const newNote = new Note({ title, text, userId: req.user.userId });
 		await newNote.save();
 		res.status(201).json(newNote);
 	} catch (err) {
@@ -66,10 +83,13 @@ app.post("/notes", async (req, res) => {
 	}
 });
 
-app.put("/notes/:id", async (req, res) => {
+app.put("/notes/:id", authenticateToken, async (req, res) => {
 	try {
 		const { title, text, date } = req.body;
-		const note = await Note.findById(req.params.id);
+		const note = await Note.findOne({
+			_id: req.params.id,
+			userId: req.user.userId,
+		});
 		if (note) {
 			note.title = title;
 			note.text = text;
@@ -86,9 +106,12 @@ app.put("/notes/:id", async (req, res) => {
 	}
 });
 
-app.delete("/notes/:id", async (req, res) => {
+app.delete("/notes/:id", authenticateToken, async (req, res) => {
 	try {
-		const note = await Note.findByIdAndDelete(req.params.id);
+		const note = await Note.findOneAndDelete({
+			_id: req.params.id,
+			userId: req.user.userId,
+		});
 
 		if (note) {
 			console.log("Successful deletion");
@@ -122,13 +145,18 @@ app.post("/notes/signup", async (req, res) => {
 		const { username, password } = req.body;
 		const user = new User({ username, password });
 		await user.save();
-		res.status(201).send("Account created successfully");
+		const token = jwt.sign({ userId: user._id }, jwtSecret, {
+			expiresIn: "1h",
+		});
+		res.status(201).json({ token, userId: user._id });
 	} catch (err) {
-		res.status(500).send(err.message);
+		if (err.code === 11000) {
+			res.status(500).send("Username already exists.");
+		} else {
+			res.status(500).send(err.message);
+		}
 	}
 });
-
-const jwt = require("jsonwebtoken");
 
 app.post("/notes/login", async (req, res) => {
 	try {
@@ -143,17 +171,6 @@ app.post("/notes/login", async (req, res) => {
 		} else {
 			res.status(401).send("Invalid credentials");
 		}
-	} catch (err) {
-		console.error(err);
-		res.status(500).send(err.message);
-	}
-});
-
-app.get("/notes/search", async (req, res) => {
-	try {
-		const { title } = req.query;
-		const notes = await Note.find({ title: new RegExp(title, "i") });
-		res.json(notes);
 	} catch (err) {
 		console.error(err);
 		res.status(500).send(err.message);

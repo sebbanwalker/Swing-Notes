@@ -14,28 +14,33 @@ const SignUpPage = () => {
 		event.preventDefault();
 
 		if (password !== confirmPassword) {
-			alert("Lösenorden matchar inte.");
+			alert("Passwords do not match.");
 			return;
 		}
 
 		try {
-			const response = await axios.post("/api/notes/signup", {
+			const response = await axios.post("http://localhost:5000/notes/signup", {
 				username,
 				password,
 			});
 
 			localStorage.setItem("token", response.data.token);
+			localStorage.setItem("username", username); // Store username
+			localStorage.setItem("userId", response.data.userId); // Store userId if returned from server
 
-			history.push("/main");
-			navigate("/main");
+			navigate("/notes");
 		} catch (error) {
 			console.error("Error signing up:", error);
 			if (error.response) {
-				alert(error.response.data);
+				if (error.response.data.includes("duplicate key error")) {
+					alert("Username already exists. Please choose another one.");
+				} else {
+					alert(error.response.data);
+				}
 			} else if (error.request) {
-				alert("Server svarade inte. Försök igen.");
+				alert("Server did not respond. Please try again.");
 			} else {
-				alert("Request fungerade inte. Försök igen.");
+				alert("Request failed. Please try again.");
 			}
 		}
 	};

@@ -1,165 +1,248 @@
 import React, { useEffect, useState } from "react";
 import Header from "../components/Header";
 import Note from "../components/Note";
-import axios from "axios";
-import style from "./NotesPage.module.scss";
 import Modal from "../components/Modal";
+import style from "./NotesPage.module.scss";
 
 const NotesPage = () => {
 	const [notes, setNotes] = useState([]);
+	const [filteredNotes, setFilteredNotes] = useState([]);
 	const [newNote, setNewNote] = useState(null);
 	const [modalOpen, setModalOpen] = useState(false);
 	const [editingNote, setEditingNote] = useState(null);
 	const [isNewNote, setIsNewNote] = useState(false);
+	const [error, setError] = useState("");
+	const [searchQuery, setSearchQuery] = useState("");
 
 	const userId = localStorage.getItem("userId");
+	const token = localStorage.getItem("token");
+
 	console.log("userId:", userId);
+	console.log("token:", token);
 
 	useEffect(() => {
 		const fetchNotes = async () => {
+			if (!userId || !token) {
+				console.error("UserId or token not found in localStorage");
+				setError("UserId or token not found. Please log in again.");
+				return;
+			}
+
 			try {
-				const userId = localStorage.getItem("userId");
-				const response = await axios.get(`http://localhost:5173/notes`, {
-					params: { userId },
-				});
-				if (Array.isArray(response.data)) {
-					setNotes(response.data);
+				const response = await fetch(
+					`http://localhost:5000/notes?userId=${userId}`,
+					{
+						headers: {
+							Authorization: `Bearer ${token}`,
+						},
+					}
+				);
+				if (!response.ok) {
+					if (response.status === 403) {
+						throw new Error("Forbidden");
+					}
+					throw new Error(`Error: ${response.status}`);
+				}
+				const data = await response.json();
+				if (Array.isArray(data)) {
+					setNotes(data);
+					setFilteredNotes(data);
 				} else {
-					console.error("API response is not an array:", response.data);
+					console.error("API response is not an array:", data);
 					setNotes([]);
+					setFilteredNotes([]);
 				}
 			} catch (err) {
 				console.error("API request failed:", err);
+				setError("API request failed. Please log in again.");
 				setNotes([]);
+				setFilteredNotes([]);
 			}
 		};
 		fetchNotes();
-	}, []);
+	}, [userId, token]);
 
 	const handleCreateNote = () => {
-		const userId = localStorage.getItem("userId");
-		if (userId === null) {
+		if (!userId) {
 			alert("You need to log in to create a note.");
 			return;
-		} else {
-			setEditingNote({
-				title: "",
-				text: "",
-				date: new Date().toISOString(),
-				isEditable: true,
-			});
-			setIsNewNote(true);
-			setModalOpen(true);
 		}
+		setEditingNote({
+			title: "",
+			text: "",
+			date: new Date().toISOString(),
+			isEditable: true,
+		});
+		setIsNewNote(true);
+		setModalOpen(true);
 	};
 
 	const handleSaveNote = async (title, text, date) => {
-		const userId = localStorage.getItem("userId");
+		if (!userId || !token) {
+			console.error("UserId or token not found in localStorage");
+			setError("UserId or token not found. Please log in again.");
+			return;
+		}
+
 		try {
-			const response = await axios.post("http://localhost:5173/notes", {
-				userId,
-				title,
-				text,
-				date,
+			const response = await fetch("http://localhost:5000/notes", {
+				method: "POST",
+				headers: {
+					"Content-Type": "application/json",
+					Authorization: `Bearer ${token}`,
+				},
+				body: JSON.stringify({ userId, title, text, date }),
 			});
 
-			if (response.data) {
-				setNotes([...notes, response.data]);
-				setNewNote(null);
-				setModalOpen(false);
-			} else {
-				console.error("API response is not an object:", response.data);
+			if (!response.ok) {
+				if (response.status === 403) {
+					throw new Error("Forbidden");
+				}
+				throw new Error(`Error: ${response.status}`);
 			}
+
+			const data = await response.json();
+			setNotes([...notes, data]);
+			setFilteredNotes([...notes, data]);
+			setNewNote(null);
+			setModalOpen(false);
 		} catch (err) {
 			console.error("API request failed:", err);
+			setError("API request failed. Please log in again.");
 		}
 	};
 
 	const handleDeleteNote = async (noteId) => {
-		const userId = localStorage.getItem("userId");
+		if (!userId || !token) {
+			console.error("UserId or token not found in localStorage");
+			setError("UserId or token not found. Please log in again.");
+			return;
+		}
+
 		try {
-			await axios.delete(`http://localhost:5173/notes/${noteId}`, {
-				params: { userId },
+			const response = await fetch(`http://localhost:5000/notes/${noteId}`, {
+				method: "DELETE",
+				headers: {
+					Authorization: `Bearer ${token}`,
+				},
 			});
 
-			setNotes(notes.filter((note) => note._id !== noteId));
+			if (!response.ok) {
+				if (response.status === 403) {
+					throw new Error("Forbidden");
+				}
+				throw new Error(`Error: ${response.status}`);
+			}
+
+			const newNotes = notes.filter((note) => note._id !== noteId);
+			setNotes(newNotes);
+			setFilteredNotes(newNotes);
 		} catch (err) {
 			console.error("API request failed:", err);
+			setError("API request failed. Please log in again.");
 		}
 	};
 
 	const handleEditNote = async (noteId, newTitle, newText, date) => {
-		const userId = localStorage.getItem("userId");
-		try {
-			const response = await axios.put(
-				`http://localhost:5173/notes/${noteId}`,
-				{
-					userId,
-					title: newTitle,
-					text: newText,
-					date,
-				}
-			);
+		if (!userId || !token) {
+			console.error("UserId or token not found in localStorage");
+			setError("UserId or token not found. Please log in again.");
+			return;
+		}
 
-			if (response.data) {
-				setNotes(
-					notes.map((note) => (note._id === noteId ? response.data : note))
-				);
-				setModalOpen(false);
-			} else {
-				console.error("API response is not an object:", response.data);
+		try {
+			const response = await fetch(`http://localhost:5000/notes/${noteId}`, {
+				method: "PUT",
+				headers: {
+					"Content-Type": "application/json",
+					Authorization: `Bearer ${token}`,
+				},
+				body: JSON.stringify({ userId, title: newTitle, text: newText, date }),
+			});
+
+			if (!response.ok) {
+				if (response.status === 403) {
+					throw new Error("Forbidden");
+				}
+				throw new Error(`Error: ${response.status}`);
 			}
+
+			const data = await response.json();
+			const updatedNotes = notes.map((note) =>
+				note._id === noteId ? data : note
+			);
+			setNotes(updatedNotes);
+			setFilteredNotes(updatedNotes);
+			setModalOpen(false);
 		} catch (err) {
 			console.error("API request failed:", err);
+			setError("API request failed. Please log in again.");
 		}
+	};
+
+	const handleSearch = (event) => {
+		const query = event.target.value.toLowerCase();
+		setSearchQuery(query);
+		const filtered = notes.filter((note) =>
+			note.title.toLowerCase().includes(query)
+		);
+		setFilteredNotes(filtered);
 	};
 
 	return (
 		<>
 			<Header />
-			{userId !== null ? (
-				notes && notes.length > 0 ? (
-					<section className={style.notes}>
-						{notes.map((note) => (
-							<Note
-								key={note._id}
-								title={note.title}
-								description={note.text}
-								date={note.createdAt}
-								onDelete={() => handleDeleteNote(note._id)}
-								onSave={(newTitle, newText) =>
-									handleEditNote(
-										note._id,
-										newTitle,
-										newText,
-										new Date().toISOString()
-									)
-								}
-								modifiedAt={note.modifiedAt}
-							/>
-						))}
-					</section>
-				) : (
-					<section className={style.message}>
-						<p>There are no notes here :( Create one?</p>
-						<button className={style.create} onClick={handleCreateNote}>
-							Create Note
-						</button>
-					</section>
-				)
+			{error && <p style={{ color: "red" }}>{error}</p>}
+			{userId ? (
+				<>
+					<input
+						type="text"
+						placeholder="Search by title..."
+						value={searchQuery}
+						onChange={handleSearch}
+						className={style.searchInput}
+					/>
+					{filteredNotes.length > 0 ? (
+						<section className={style.notes}>
+							{filteredNotes.map((note) => (
+								<Note
+									key={note._id}
+									title={note.title}
+									description={note.text}
+									date={note.createdAt}
+									onDelete={() => handleDeleteNote(note._id)}
+									onSave={(newTitle, newText) =>
+										handleEditNote(
+											note._id,
+											newTitle,
+											newText,
+											new Date().toISOString()
+										)
+									}
+									modifiedAt={note.modifiedAt}
+								/>
+							))}
+						</section>
+					) : searchQuery ? (
+						<section className={style.message}>
+							<p>No notes found with the title "{searchQuery}"</p>
+							<button className={style.create} onClick={handleCreateNote}>
+								Create Note
+							</button>
+						</section>
+					) : (
+						<section className={style.message}>
+							<p>No notes available. Create one?</p>
+							<button className={style.create} onClick={handleCreateNote}>
+								Create Note
+							</button>
+						</section>
+					)}
+				</>
 			) : (
 				<section className={style.message}>
 					<p>You need to log in to see notes.</p>
 				</section>
-			)}
-			{newNote && (
-				<Note
-					{...newNote}
-					onSave={(newTitle, newText) => {
-						handleSaveNote(newTitle, newText, new Date().toISOString());
-						setNewNote(null);
-					}}
-				/>
 			)}
 			{modalOpen && (
 				<Modal

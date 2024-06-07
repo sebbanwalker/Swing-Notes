@@ -39,3 +39,27 @@
 	margin-left: auto;
 	margin-right: auto;
 }
+
+.searchInput {
+	width: 60%;
+	background: none;
+	border: none;
+	font-family: $buttonFont;
+	color: $primaryNavy;
+	padding: 5px 5px;
+	border: 2px solid rgba($primaryNavy, 0.1);
+	border-radius: 10px;
+	margin-left: 20%;
+	margin-right: 20%;
+	margin-bottom: 10px;
+
+	&::placeholder {
+		color: $primaryNavy;
+	}
+
+	&:focus {
+		outline: none;
+		background-color: $primaryLight;
+		@include button-shadow;
+	}
+}

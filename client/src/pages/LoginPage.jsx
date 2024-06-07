@@ -7,10 +7,25 @@ const LoginPage = () => {
 	const [password, setPassword] = useState("");
 	const navigate = useNavigate();
 
-	const handleSubmit = (event) => {
+	const handleSubmit = async (event) => {
 		event.preventDefault();
-		localStorage.setItem("userId", JSON.stringify({ username }));
-		navigate("/notes");
+		const response = await fetch("http://localhost:5000/notes/login", {
+			method: "POST",
+			headers: {
+				"Content-Type": "application/json",
+			},
+			body: JSON.stringify({ username, password }),
+		});
+
+		if (response.ok) {
+			const { userId, token } = await response.json();
+			localStorage.setItem("userId", userId); // Store userId
+			localStorage.setItem("username", username); // Store username
+			localStorage.setItem("token", token);
+			navigate("/notes");
+		} else {
+			// Handle error
+		}
 	};
 
 	return (

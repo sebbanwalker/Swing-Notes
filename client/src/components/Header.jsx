@@ -10,16 +10,17 @@ const Header = () => {
 	const navigate = useNavigate();
 
 	useEffect(() => {
-		const storedUser = localStorage.getItem("userId");
-		if (storedUser) {
-			const user = JSON.parse(storedUser);
-			setUsername(user.username);
+		const storedUsername = localStorage.getItem("username");
+		if (storedUsername) {
+			setUsername(storedUsername);
 			setIsLoggedIn(true);
 		}
 	}, []);
 
 	const handleLogout = () => {
 		localStorage.removeItem("userId");
+		localStorage.removeItem("username");
+		localStorage.removeItem("token");
 		setIsLoggedIn(false);
 		setUsername("");
 		navigate("/login");
@@ -27,7 +28,7 @@ const Header = () => {
 
 	return (
 		<section className={style.headerContainer}>
-			<img src={HeaderImage} className={style.headerImage}></img>
+			<img src={HeaderImage} className={style.headerImage} alt="Logo" />
 			<article className={style.headerButtonContainer}>
 				<button
 					className={style.headerButton}
