@@ -1,6 +1,6 @@
 ### Start the project by following these steps:
 
-1. Create .env-file
+1. Create .env-file with JWT_SECRET=your_secret and PORT=5000
 2. Run mongodb server on URI: mongodb://localhost:27017
 3. Run npm install in both client and server folders.
 4. Run npm start or node app.js in server folder.
